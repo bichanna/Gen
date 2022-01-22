@@ -165,12 +165,22 @@ class Parser:
 	
 	def expr(self):
 		res = ParseResult()
+		# checking map or array var reassignment
+		res.deregister_advance()
+		self.reverse(1)
+		has_at = False
+		if self.current_token.type == tk.TT_AT:
+			has_at = True
+		res.register_advance()
+		self.advance()
 		# checking variable assignment
 		if self.current_token.type == tk.TT_IDENTIFIER:
 			var_name = self.current_token
 			res.register_advance()
 			self.advance()
 			if self.current_token.type == tk.TT_EQUALS:
+				if has_at:
+					return res.success(VarAccessNode(var_name))
 				res.register_advance()
 				self.advance()
 				expression = res.register(self.expr())
@@ -190,7 +200,7 @@ class Parser:
 	def if_expr(self):
 		res = ParseResult()
 		all_cases = res.register(self.if_expr_cases("if"))
-		if res.error: res
+		if res.error: return res
 		cases, else_case = all_cases
 		return res.success(IfNode(cases, else_case))
 	
@@ -406,7 +416,7 @@ class Parser:
 						self.current_token.pos_start, self.current_token.pos_end, "Map cannot be modified directly"
 					))
 				elif isinstance(left.left_node, BinOpNode):
-					new_left = left.left_node.left_node.var_name_token
+					new_left = res.register(self.expr())
 				else:
 					new_left = left.left_node.var_name_token
 				is_direct = False

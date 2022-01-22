@@ -1,19 +1,18 @@
-def bubble_sort(our_list):
-    # We go through the list as many times as there are elements
-    for i in range(len(our_list)):
-        # We want the last pair of adjacent elements to be (n-2, n-1)
-        for j in range(len(our_list) - 1):
-            if our_list[j] > our_list[j+1]:
-                # Swap
-                our_list[j], our_list[j+1] = our_list[j+1], our_list[j]
-
-
 defunc bubble_sort(arr)
-	for i = 0 through sizeof(arr) then
-		for j = 0 through sizeof(arr)-1 then
-			if arr@j > arr@j+1 then
-				
-			end
-		end
-	end
+    for i=0 through size(arr) then
+        for j=0 through size(arr)-i-1 then
+            jpls1 = j + 1
+            if (arr@j) > (arr@jpls1) then
+                temp = arr@j
+                arr@j = arr@jpls1
+                arr@jpls1 = temp
+            end
+        end
+    end
+    return arr
 end
+
+
+sorted = bubble_sort([3734, 3732, 3810, 1649, 4952, 7993, 1225, 2728, 2849, 2113, 9883, 2741, 5684, 6848, 2834, 1838, 2483, 8384, 7885, 4853, 5848, 3838])
+
+println(sorted)

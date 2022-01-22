@@ -10,7 +10,8 @@
 
 **WARNING!! THIS LANGUAGE IS IN DEVELOPMENT. ANYTHING CAN CHANGE AT ANY MOMENT.**
 
-Gen is an easy-to-learn, dynamic, interpreted, procedural programming language. Gen's syntax is inspired by Ruby and Python.
+Gen is an easy-to-learn, dynamic, interpreted, procedural programming language. Gen's syntax is inspired by Ruby and Python. <br>
+You also have a simple REPL (but you need to write for loops, if statements, and functions in one line, which is possible but hard).
 
 ### TODO List
  - [x] Built-in functions
@@ -53,7 +54,7 @@ end
 ```
 
 ### Contributing
-Contributions are welcome! Especially, I need a help on Makefile and Map (dictionary).
+Contributions are welcome! Especially, I need a help on Makefile and importing.
 
 ### Reports
 If you found a bug, please open a new issue and paste the error message and your code that caused the bug.

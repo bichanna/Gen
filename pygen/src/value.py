@@ -345,6 +345,8 @@ class Map(Value):
 			string += f"{key}: {value}, "
 		if string[-1] == " " and string[-2] == ",":
 			string = string[:-2] + "}"
+		else:
+			string += "}"
 		return string
 
 

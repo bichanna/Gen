@@ -1,5 +1,6 @@
 import readline # this is necessary: DO NOT REMOVE
 import sys
+import signal
 from src.lexer import Lexer
 from src.parser import Parser
 from src.value import Number
@@ -75,9 +76,15 @@ def file(filename, show_tokens):
 		exit()
 	_, error = run(filename, code, show_tokens)
 	if error is not None: print(error)
-	
+
+def ctrl_c_handler(*_):
+	print("\nBye bye!")
+	exit()
 
 if __name__ == "__main__":
+	# for catching Ctrl-C
+	signal.signal(signal.SIGINT, ctrl_c_handler)
+
 	if len(sys.argv) < 2 or sys.argv[-1].endswith(".py"):
 		shell()
 	else:

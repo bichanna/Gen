@@ -24,7 +24,7 @@ Gen array can store any type.
 ```
 arr = ["Hello", "World", 123, 3.1415, ["me", "gen"]]
 # to add a new value, just use '+'
-arr + "bichanna"
+arr = arr + "bichanna"
 
 a = [1, 2, 3, 4]
 # use '@' to retrieve specific value from an array
@@ -35,7 +35,7 @@ println(a@-1) # the last element
 ### Map
 ```
 map = {"foo": "bee"}
-println(map@"a")
+println(map@"foo")
 ```
 
 ### Logical Operators
