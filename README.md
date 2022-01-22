@@ -14,7 +14,7 @@ Gen is an easy-to-learn, dynamic, interpreted, procedural programming language. 
 
 ### TODO List
  - [x] Built-in functions
- - [x] Map (dictionary in Python)
+ - [x] Map
  - [ ] Import other files
  - [x] Reading files with extention .gen (meaning allowing multi-line statements)
 
