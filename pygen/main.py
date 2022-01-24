@@ -1,38 +1,42 @@
 import readline # this is necessary: DO NOT REMOVE
 import sys
 import signal
-from src.lexer import Lexer
-from src.parser import Parser
 from src.value import Number
 from src.builtin_func import BuiltinFunction
+from src.lexer import Lexer
+from src.parser import Parser
 from src.evaluator import Evaluator
 from src.context import Context
 from src.symbol_table import SymbolTable
 
+def set_default_symbol_table(symbol_table):
+	symbol_table.set("null", Number.null)
+	symbol_table.set("true", Number.true)
+	symbol_table.set("false", Number.false)
+	symbol_table.set("Pi", Number.Pi)
+	# built-in functions
+	symbol_table.set("println", BuiltinFunction.println)
+	symbol_table.set("print", BuiltinFunction.print)
+	symbol_table.set("input", BuiltinFunction.input)
+	symbol_table.set("int_input", BuiltinFunction.int_input)
+	symbol_table.set("absolute_number_of", BuiltinFunction.absolute_number_of)
+	symbol_table.set("is_number", BuiltinFunction.is_number)
+	symbol_table.set("is_string", BuiltinFunction.is_string)
+	symbol_table.set("is_array", BuiltinFunction.is_array)
+	symbol_table.set("is_function", BuiltinFunction.is_function)
+	symbol_table.set("exit_program", BuiltinFunction.exit_program)
+	symbol_table.set("size", BuiltinFunction.size)
+	symbol_table.set("typeof", BuiltinFunction.typeof)
+	symbol_table.set("int", BuiltinFunction.int)
+	symbol_table.set("float", BuiltinFunction.float)
+	symbol_table.set("string", BuiltinFunction.string)
+	symbol_table.set("chars", BuiltinFunction.chars)
+	symbol_table.set("split", BuiltinFunction.split)
+	symbol_table.set("import", BuiltinFunction.import_)
+	return symbol_table
+
 global_symbol_table = SymbolTable()
-global_symbol_table.set("null", Number.null)
-global_symbol_table.set("true", Number.true)
-global_symbol_table.set("false", Number.false)
-global_symbol_table.set("Pi", Number.Pi)
-# built-in functions
-global_symbol_table.set("println", BuiltinFunction.println)
-global_symbol_table.set("print", BuiltinFunction.print)
-global_symbol_table.set("input", BuiltinFunction.input)
-global_symbol_table.set("int_input", BuiltinFunction.int_input)
-global_symbol_table.set("absolute_number_of", BuiltinFunction.absolute_number_of)
-global_symbol_table.set("is_number", BuiltinFunction.is_number)
-global_symbol_table.set("is_string", BuiltinFunction.is_string)
-global_symbol_table.set("is_array", BuiltinFunction.is_array)
-global_symbol_table.set("is_function", BuiltinFunction.is_function)
-global_symbol_table.set("exit_program", BuiltinFunction.exit_program)
-global_symbol_table.set("size", BuiltinFunction.size)
-global_symbol_table.set("typeof", BuiltinFunction.typeof)
-global_symbol_table.set("int", BuiltinFunction.int)
-global_symbol_table.set("float", BuiltinFunction.float)
-global_symbol_table.set("string", BuiltinFunction.string)
-global_symbol_table.set("chars", BuiltinFunction.chars)
-global_symbol_table.set("split", BuiltinFunction.split)
-global_symbol_table.set("import", BuiltinFunction.import_)
+global_symbol_table = set_default_symbol_table(global_symbol_table)
 
 def run(filename, text, show_tokens=False):
 	# generate tokens
@@ -45,13 +49,15 @@ def run(filename, text, show_tokens=False):
 	parser = Parser(tokens)
 	ast = parser.parse()
 	if ast.error: return None, ast.error
+	# print(ast.node.element_nodes)
 
 	# call evaluator
 	evaluator = Evaluator()
 	context = Context("<module>")
 	context.symbol_table = global_symbol_table
 	result = evaluator.visit(ast.node, context)
-
+	if result is None:
+		exit()
 	return result.value, result.error
 
 def shell():
@@ -73,13 +79,13 @@ def file(filename, show_tokens):
 			code = fobj.read()
 	except Exception:
 		print(f"Could not open file '{filename}'.")
-		exit()
+		sys.exit()
 	_, error = run(filename, code, show_tokens)
 	if error is not None: print(error)
 
 def ctrl_c_handler(*_):
 	print("\nBye bye!")
-	exit()
+	sys.exit()
 
 if __name__ == "__main__":
 	# for catching Ctrl-C

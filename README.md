@@ -10,14 +10,15 @@
 
 **WARNING!! THIS LANGUAGE IS IN DEVELOPMENT. ANYTHING CAN CHANGE AT ANY MOMENT.**
 
-Gen is an easy-to-learn, dynamic, interpreted, procedural programming language. Gen's syntax is inspired by Ruby and Python. <br>
-You also have a simple REPL (but you need to write for loops, if statements, and functions in one line, which is possible but hard).
+Gen is an easy-to-learn, dynamic, interpreted, procedural scripting language. Gen's syntax is inspired by Ruby and Python. <br>
+Gen also has a simple REPL (but you need to write for loops, if statements, and functions in one line, which is possible but hard to write).<br>
+And in Gen, a semicolon is the same as a new line, so you can ultimately write everthing in one line.
 
-### TODO List
- - [x] Built-in functions
- - [x] Map
- - [ ] Import other files
- - [x] Reading files with extention .gen (meaning allowing multi-line statements)
+
+### TODO
+ - [x] Basic Built-in functions
+ - [ ] File I/O Operation
+
 
 ### Installation
 ```
@@ -37,24 +38,32 @@ println("Hello World")
 ### Example
 For examples, see [examples directory](https://github.com/Gen-lang/Gen/tree/master/examples).
 ```
-# Fizzbuzz
+# Bubble sort
 
-for fizzbuzz = 0 through 51 then
-	if fizzbuzz % 3 == 0 and fizzbuzz % 5 == 0 then
-		println("fizzbuzz")
-		continue
-	elseif fizzbuzz % 3 == 0 then
-		println("fizz")
-		continue
-	elseif fizzbuzz % 5 == 0 then
-		println("buzz")
-		continue
-	end
+defunc bubble_sort(arr)
+    for i=0 through size(arr) then
+        for j=0 through size(arr)-i-1 then
+            jpls1 = j + 1
+            if (arr@j) > (arr@jpls1) then
+                temp = arr@j
+                arr@j = arr@jpls1
+                arr@jpls1 = temp
+            end
+        end
+    end
 end
+
+
+array = [3734, 3732, 3810, 1649, 4952, 7993, 1225, 2728, 2849, 2113, 9883, 3839, 2839, 5463, 2741, 5684, 6848, 2834, 1838, 2483, 8384, 7885, 4853, 5848, 3838]
+
+bubble_sort(array)
+
+println(array)
+
 ```
 
 ### Contributing
-Contributions are welcome! Especially, I need a help on Makefile and importing.
+Contributions are welcome! Especially, I need a help on Makefile and bug fixing.
 
 ### Reports
 If you found a bug, please open a new issue and paste the error message and your code that caused the bug.

@@ -1,0 +1,5 @@
+defunc greet(name)
+	println("Hello " + name + "!")
+end
+
+some_var = "some string"

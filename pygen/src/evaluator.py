@@ -50,10 +50,15 @@ class RuntimeResult:
 
 
 class Evaluator:
-	def visit(self, node, context):
-		method_to_be_called = f"visit_{type(node).__name__}"
-		method = getattr(self, method_to_be_called, self.no_visit_method)
-		return method(node, context)
+	def visit(self, node, context, only_return_symtable=False):
+		if isinstance(node, type(None)) is False:
+			method_to_be_called = f"visit_{type(node).__name__}"
+			method = getattr(self, method_to_be_called, self.no_visit_method)
+			if only_return_symtable is False: return method(node, context)
+			else:
+				method(node, context)
+				return context.symbol_table
+		return None
 	
 	def no_visit_method(self, node, context):
 		raise Exception(f"No visit_{type(node).__name__} method defined.")
@@ -90,10 +95,18 @@ class Evaluator:
 			var_name = node.var_name_token.value
 			index_or_key = res.register(self.visit(node.index_or_key, context))
 			if res.should_return(): return res
-			value = res.register(self.visit(node.value_node, context))
+			new_value = res.register(self.visit(node.value_node, context))
 			if res.should_return(): return res
-			context.symbol_table.set_arr_or_map(var_name, index_or_key, value)
-		return res.success(value)
+			if isinstance(context.symbol_table.symbols[var_name], value.Array):
+				if len(context.symbol_table.symbols[var_name].elements) > index_or_key.value:
+					context.symbol_table.set_arr(var_name, index_or_key, new_value)
+				else:
+					return res.failure(RuntimeError(
+						node.pos_start, node.pos_end, f"Element at index {index_or_key.value} does not exist", context
+					))
+			else:
+				context.symbol_table.set_map(var_name, index_or_key, new_value)
+		return res.success(new_value)
 	
 	def visit_IfNode(self, node, context):
 		res = RuntimeResult()

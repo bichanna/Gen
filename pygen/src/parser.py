@@ -398,8 +398,14 @@ class Parser:
 			left = BinOpNode(left, op_token, right)
 		# check for array or map assignment
 		if is_arr_or_map_assign:
-			res.deregister_advance()
-			self.reverse(amount=1)
+			# go back until self.current_token is TT_AT so that the index can be parsed again
+			while True:
+				res.deregister_advance()
+				self.reverse(amount=1)
+				if self.current_token.type == tk.TT_AT:
+					res.register_advance()
+					self.advance()
+					break
 			index_or_key = res.register(self.expr())
 			if self.current_token.type != tk.TT_EQUALS:
 				return res.success(left)
@@ -610,6 +616,14 @@ class Parser:
 		
 	
 	def parse(self):
+		# check if there's anything to do at all
+		not_empty = True
+		for token in self.tokens:
+			if token.type != tk.TT_NL and token.type != tk.TT_EOF:
+				not_empty = False
+				break
+		if not_empty is True:
+			return ParseResult()
 		result = self.statements()
 		if result.error and self.current_token.type != tk.TT_EOF:
 			return result.failure(InvalidSyntaxError(

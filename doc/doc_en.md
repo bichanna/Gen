@@ -115,5 +115,13 @@ greet("bichanna")
 println(return_greet("bichanna"))
 ```
 
+### Import
+```
+import("some_file.gen")
+
+# then you can call functions in some_file.gen
+some_func_in_some_file()
+```
+
 For built-in functions see [this doc](https://github.com/Gen-lang/Gen/blob/master/doc/builtin_functions.md).
 

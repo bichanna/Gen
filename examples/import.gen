@@ -1,1 +1,3 @@
-import("fizzbuzz")
+import("func.gen")
+
+greet("bichanna")

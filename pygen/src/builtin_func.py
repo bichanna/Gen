@@ -1,6 +1,7 @@
+from src.lexer import Lexer
+from src.parser import Parser
 from src.value import *
 from src.evaluator import RuntimeResult, RuntimeError
-import sys
 
 class BuiltinFunction(BaseFunction):
 	def __init__(self, name):
@@ -91,7 +92,7 @@ class BuiltinFunction(BaseFunction):
 			value = int(context.symbol_table.get("value").value)
 		except ValueError:
 			return RuntimeResult().failure(RuntimeError(
-				self.pos_start, self.pos_end, f"{value} does not have an absolute number"
+				self.pos_start, self.pos_end, f"{value} does not have an absolute number", context
 			))
 		return RuntimeResult().success(Number(abs(value)))
 	execute_absolute_number_of.arg_names = ["value"]
@@ -186,7 +187,7 @@ class BuiltinFunction(BaseFunction):
 			return RuntimeResult().success(String("map"))
 		else:
 			return RuntimeResult().failure(RuntimeError(
-				self.pos_start, self.pos_end, f"{value} has no type"
+				self.pos_start, self.pos_end, f"{value} has no type", context
 			))
 	execute_typeof.arg_names = ["value"]
 	
@@ -200,7 +201,7 @@ class BuiltinFunction(BaseFunction):
 			int_value = int(value.value)
 		except:
 			return RuntimeResult().failure(RuntimeError(
-				self.pos_start, self.pos_end, f"{value.value} cannot be converted to integer"
+				self.pos_start, self.pos_end, f"{value.value} cannot be converted to integer", context
 			))
 		return RuntimeResult().success(Number(int_value))
 	execute_int.arg_names = ["value"]
@@ -215,7 +216,7 @@ class BuiltinFunction(BaseFunction):
 			float_value = float(value.value)
 		except:
 			return RuntimeResult().failure(RuntimeError(
-				self.pos_start, self.pos_end, f"{value.value} cannot be converted to float"
+				self.pos_start, self.pos_end, f"{value.value} cannot be converted to float", context
 			))
 		return RuntimeResult().success(Number(float_value))
 	execute_float.arg_names = ["value"]
@@ -257,17 +258,33 @@ class BuiltinFunction(BaseFunction):
 	def execute_import(self, context):
 		"""
 			import the specified file
+			example: import("some_file.gen")
+					 some_function()
 		"""
 		filename = context.symbol_table.get("filename").value
 		try:
-			with open(filename+".gen", "r") as fobj:
+			with open(filename, "r") as fobj:
 				code = fobj.read()
 		except Exception:
-			print(f"Could not open file '{filename}.gen'.")
-			sys.exit()
-		import main
-		_, error = main.run(filename, code)
-		if error is not None: print(error)
+			return RuntimeResult().failure(RuntimeError(
+				self.pos_start, self.pos_end, f"Could not open file'{filename}'", context
+			))
+
+		# generate tokens
+		lexer = Lexer(filename, code)
+		tokens, err = lexer.make_tokens()
+		if err is not None: return None, err
+
+		# generate AST
+		parser = Parser(tokens)
+		ast = parser.parse()
+		if ast.error: return None, ast.error
+		
+		evaluator = Evaluator()
+		new_symbol_table = evaluator.visit(ast.node, context, only_return_symtable=True)
+		
+		for k, v in new_symbol_table.symbols.items():
+			self.context.symbol_table.set(k, v)
 		return RuntimeResult().success(Number.null)
 	execute_import.arg_names = ["filename"]
 

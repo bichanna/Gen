@@ -10,12 +10,11 @@ class SymbolTable:
 	def set(self, var_name, value):
 		self.symbols[var_name] = value
 	
-	def set_arr_or_map(self, var_name, key_or_index, value):
-		from src.value import Array
-		if isinstance(self.symbols[var_name], Array):
-			self.symbols[var_name].elements[key_or_index.value] = value
-		else:
-			self.symbols[var_name].map[key_or_index.value] = value
+	def set_arr(self, var_name, index, value):
+		self.symbols[var_name].elements[index.value] = value
+	
+	def set_map(self, var_name, key, value):
+		self.symbols[var_name].map[key.value] = value
 	
 	def remove(self, var_name):
 		del self.symbols[var_name]

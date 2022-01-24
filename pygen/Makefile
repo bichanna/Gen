@@ -4,9 +4,9 @@
 install:
 ifeq ($(OS),Windows_NT)
 	@pip install pyinstaller
-	@pyinstaller ./main.py --onefile
+	@pyinstaller .\main.py --onefile
 	@COPY ".\dist\main.exe" ".\gen.exe"
-	# Set environment variable here
+# Set environment variable here
 	@echo "PyGen Compilation Succeeded"
 	@echo "Type 'gen'"
 else
