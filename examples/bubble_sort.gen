@@ -11,11 +11,12 @@ defunc bubble_sort(arr)
             end
         end
     end
+    return arr
 end
 
 
 array = [3734, 3732, 3810, 1649, 4952, 7993, 1225, 2728, 2849, 2113, 9883, 3839, 2839, 5463, 2741, 5684, 6848, 2834, 1838, 2483, 8384, 7885, 4853, 5848, 3838]
 
-bubble_sort(array)
+sorted_arr = bubble_sort(array)
 
-println(array)
+println(sorted_arr)

@@ -1,3 +1,5 @@
+import os
+import platform
 from src.lexer import Lexer
 from src.parser import Parser
 from src.value import *
@@ -160,7 +162,7 @@ class BuiltinFunction(BaseFunction):
 			example: size([1, 2, 3])
 		"""
 		value = context.symbol_table.get("value")
-		if isinstance(value, Number):
+		if isinstance(value, Number) or isinstance(value, Map):
 			return RuntimeResult().failure(RuntimeError(
 				self.pos_start, self.pos_end, "The argument should be string or array", context
 			))
@@ -185,6 +187,8 @@ class BuiltinFunction(BaseFunction):
 			return RuntimeResult().success(String("array"))
 		elif isinstance(value, Map):
 			return RuntimeResult().success(String("map"))
+		elif isinstance(value, Function):
+			return RuntimeResult().success(String("function"))
 		else:
 			return RuntimeResult().failure(RuntimeError(
 				self.pos_start, self.pos_end, f"{value} has no type", context
@@ -197,6 +201,10 @@ class BuiltinFunction(BaseFunction):
 			example: int("3")
 		"""
 		value = context.symbol_table.get("value")
+		if isinstance(value, Array) or isinstance(value, Map):
+			return RuntimeResult().failure(RuntimeError(
+				self.pos_start, self.pos_end, "Argument should not be an array or a map", context
+			))
 		try:
 			int_value = int(value.value)
 		except:
@@ -212,6 +220,10 @@ class BuiltinFunction(BaseFunction):
 			example: float(4)
 		"""
 		value = context.symbol_table.get("value")
+		if isinstance(value, Array) or isinstance(value, Map):
+			return RuntimeResult().failure(RuntimeError(
+				self.pos_start, self.pos_end, "Arguement should not be an array or a map", context
+			))
 		try:
 			float_value = float(value.value)
 		except:
@@ -227,6 +239,10 @@ class BuiltinFunction(BaseFunction):
 			example: string(344.3)
 		"""
 		value = context.symbol_table.get("value")
+		if isinstance(value, Map) or isinstance(value, Array):
+			return RuntimeResult().failure(RuntimeError(
+				self.pos_start, self.pos_end, "Argument should not be an array or a map", context
+			))
 		new_value = str(value.value)
 		return RuntimeResult().success(String(new_value))
 	execute_string.arg_names = ["value"]
@@ -238,6 +254,10 @@ class BuiltinFunction(BaseFunction):
 			example 2: chars(123)
 		"""
 		value = context.symbol_table.get("value")
+		if isinstance(value, Array) or isinstance(value, Map):
+			return RuntimeResult().failure(RuntimeError(
+				self.pos_start, self.pos_end, "Argument should not be an array or a map", context
+			))
 		lst = []
 		for i in str(value.value):
 			lst.append(String(i))
@@ -249,9 +269,13 @@ class BuiltinFunction(BaseFunction):
 			split the given string
 			example: split("Bob,Sue,John", ",")
 		"""
-		value = context.symbol_table.get("value").value
-		delimiter = context.symbol_table.get("delimiter").value
-		lst = value.split(delimiter)
+		value = context.symbol_table.get("value")
+		delimiter = context.symbol_table.get("delimiter")
+		if isinstance(value, Array) or isinstance(value, Map) or not isinstance(value, String) or isinstance(delimiter, Array) or isinstance(delimiter, Map) or not isinstance(delimiter, String):
+			return RuntimeResult().failure(RuntimeError(
+				self.pos_start, self.pos_end, "Both arguments should be the type of string", context
+			))
+		lst = value.value.split(delimiter.value)
 		return RuntimeResult().success(Array(lst))
 	execute_split.arg_names = ["value", "delimiter"]
 
@@ -261,7 +285,12 @@ class BuiltinFunction(BaseFunction):
 			example: import("some_file.gen")
 					 some_function()
 		"""
-		filename = context.symbol_table.get("filename").value
+		filename = context.symbol_table.get("filename")
+		if not isinstance(filename, String):
+			return RuntimeResult().failure(RuntimeError(
+				self.pos_start, self.pos_end, "Argument should be the type of string", context
+			))
+		filename = filename.value
 		try:
 			with open(filename, "r") as fobj:
 				code = fobj.read()
@@ -288,6 +317,18 @@ class BuiltinFunction(BaseFunction):
 		return RuntimeResult().success(Number.null)
 	execute_import.arg_names = ["filename"]
 
+	def execute_clear(self, context):
+		"""
+			clear the terminal (console)
+			example: clear()
+		"""
+		if platform.system() == "Darwin" or platform.system() == "Linux":
+			os.system("clear")
+		elif platform.system() == "Windows":
+			os.system("cls")
+		return RuntimeResult().success(Number.null)
+	execute_clear.arg_names = []
+
 
 BuiltinFunction.println 			= BuiltinFunction("println")
 BuiltinFunction.print	 			= BuiltinFunction("print")
@@ -308,3 +349,4 @@ BuiltinFunction.string				= BuiltinFunction("string")
 BuiltinFunction.chars				= BuiltinFunction("chars")
 BuiltinFunction.split				= BuiltinFunction("split")
 BuiltinFunction.import_				= BuiltinFunction("import")
+BuiltinFunction.clear				= BuiltinFunction("clear")

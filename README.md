@@ -2,9 +2,9 @@
     <img width="115px" src="https://user-images.githubusercontent.com/60306074/148671204-b759cf4b-dada-483b-80f5-7bc24efc49e5.png">
     <h1>Gen Programming Language</h1>
 	|
-	<a href="https://github.com/Gen-lang/Gen/tree/master/doc/doc_en.md">Doc(English)</a>
+	<a href="https://github.com/Gen-lang/Gen/tree/master/docs/doc_en.md">Doc(English)</a>
 	|
-	<a href="https://github.com/Gen-lang/Gen/tree/master/doc/doc_jp.md">Doc(日本語)</a>
+	<a href="https://github.com/Gen-lang/Gen/tree/master/docs/doc_jp.md">Doc(日本語)</a>
 	|
 </div>
 
@@ -18,9 +18,11 @@ And in Gen, a semicolon is the same as a new line, so you can ultimately write e
 ### TODO
  - [x] Basic Built-in functions
  - [ ] File I/O Operation
+ - [ ] Official site
 
 
 ### Installation
+> *Note:* Do not use `git clone` command to clone the repository. Please download the source code from the releases page
 ```
 cd Gen/pygen
 make install
@@ -63,7 +65,7 @@ println(array)
 ```
 
 ### Contributing
-Contributions are welcome! Especially, I need a help on Makefile and bug fixing.
+Contributions are welcome! Especially, I need help bug fixing and the official website.
 
 ### Reports
 If you found a bug, please open a new issue and paste the error message and your code that caused the bug.
