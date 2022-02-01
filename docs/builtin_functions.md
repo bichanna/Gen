@@ -21,5 +21,7 @@ I will add more built-in functions, but if you want something that's not listed 
 | int | Convert the given value to an integer | `int("48")`
 | float | Convert the given value to a float | `float("83")`
 | string | Convert the given value to a string | `string(383.2)`
+| keys | Return an array of keys of a map | `keys(map)`
+| values | Return an array of values of a map | `values(map)`
 | chars | Split the given value to characters and store it in an array | `chars("bichanna")`
 | exit_program | Exit the program | `exit_program()`

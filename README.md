@@ -10,7 +10,7 @@
 
 **WARNING!! THIS LANGUAGE IS IN DEVELOPMENT. ANYTHING CAN CHANGE AT ANY MOMENT.**
 
-Gen is an easy-to-learn, dynamic, interpreted, procedural scripting language. Gen's syntax is inspired by Ruby and Python. <br>
+Gen is an easy-to-learn, dynamic, interpreted, procedural programming language. Gen's syntax is inspired by Ruby and Python. <br>
 Gen also has a simple REPL (but you need to write for loops, if statements, and functions in one line, which is possible but hard to write).<br>
 And in Gen, a semicolon is the same as a new line, so you can ultimately write everthing in one line.
 
@@ -18,11 +18,11 @@ And in Gen, a semicolon is the same as a new line, so you can ultimately write e
 ### TODO
  - [x] Basic Built-in functions
  - [ ] File I/O Operation
- - [ ] Official site
+ - [x] Official site
 
 
 ### Installation
-> *Note:* Do not use `git clone` command to clone the repository. Please download the source code from the releases page
+> *Note:* Using `git clone` to clone the repository is discouraged. Please download the source code from the releases page
 ```
 cd Gen/pygen
 make install
@@ -65,7 +65,7 @@ println(array)
 ```
 
 ### Contributing
-Contributions are welcome! Especially, I need help bug fixing and the official website.
+Contributions are welcome! Especially, I need help bug fixing.
 
 ### Reports
 If you found a bug, please open a new issue and paste the error message and your code that caused the bug.

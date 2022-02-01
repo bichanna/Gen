@@ -46,7 +46,8 @@ KEYWORDS = [
 	"end",
 	"return",
 	"continue",
-	"break"
+	"break",
+	"in"
 ]
 
 class Token:

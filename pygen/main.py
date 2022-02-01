@@ -34,6 +34,9 @@ def set_default_symbol_table(symbol_table):
 	symbol_table.set("split", BuiltinFunction.split)
 	symbol_table.set("import", BuiltinFunction.import_)
 	symbol_table.set("clear", BuiltinFunction.clear)
+	symbol_table.set("keys", BuiltinFunction.keys)
+	symbol_table.set("values", BuiltinFunction.values)
+	symbol_table.set("read", BuiltinFunction.read)
 	return symbol_table
 
 global_symbol_table = SymbolTable()
@@ -63,7 +66,10 @@ def run(filename, text, show_tokens=False):
 
 def shell():
 	while True:
-		t = input("gen>> ")
+		try:
+			t = input(">> ")
+		except EOFError:
+			ctrl_c_handler(None)
 		if t.strip() == "": continue
 		result, err = run("<stdin>", t)
 		if err is not None:

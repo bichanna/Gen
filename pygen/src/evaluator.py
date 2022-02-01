@@ -1,5 +1,6 @@
 import src.gen_token as tk
 import src.value as value
+import src.node as nd
 from src.error import RuntimeError
 
 class RuntimeResult:
@@ -104,8 +105,12 @@ class Evaluator:
 					return res.failure(RuntimeError(
 						node.pos_start, node.pos_end, f"Element at index {index_or_key.value} does not exist", context
 					))
-			else:
+			elif isinstance(context.symbol_table.symbols[var_name], value.Map):
 				context.symbol_table.set_map(var_name, index_or_key, new_value)
+			else:
+				return res.failure(RuntimeError(
+					node.pos_start, node.pos_end, "Hmm, that does not work.", context
+				))
 		return res.success(new_value)
 	
 	def visit_IfNode(self, node, context):
@@ -209,6 +214,30 @@ class Evaluator:
 				elements.append(val)
 		return res.success(value.Number.null if node.should_return_null else value.Array(elements).set_context(context).set_position(node.pos_start, node.pos_end))
 	
+	def visit_ForInNode(self, node, context):
+		res = RuntimeResult()
+		to_be_iterated = res.register(self.visit(node.array_elements, context))
+		if res.should_return(): return res
+		if isinstance(to_be_iterated, value.Array):
+			for item in to_be_iterated.elements:
+				context.symbol_table.set(node.var_name_token.value, item)
+				val = res.register(self.visit(node.body_node, context))
+				if res.should_return() and res.loop_continue is False and res.loop_break is False: return res
+				if res.loop_continue is True: continue
+				elif res.loop_break is True: break
+		elif isinstance(to_be_iterated, value.String):
+			for item in to_be_iterated.value:
+				context.symbol_table.set(node.var_name_token.value, value.String(item))
+				val = res.register(self.visit(node.body_node, context))
+				if res.should_return() and res.loop_continue is False and res.loop_break is False: return res
+				if res.loop_continue is True: continue
+				elif res.loop_break is True: break
+		else:
+			return res.failure(RuntimeError(
+				node.pos_start, node.pos_end, f"Cannot iterate type {res}", context
+			))
+		return res.success(value.Number.null)
+	
 	def visit_ArrayNode(self, node, context):
 		res = RuntimeResult()
 		elements = []
@@ -221,6 +250,10 @@ class Evaluator:
 		res = RuntimeResult()
 		map = {}
 		for key, v in node.map.items():
+			if isinstance(key, nd.ArrayNode) or isinstance(key, nd.MapNode):
+				return res.failure(RuntimeError(
+					node.pos_start, node.pos_end, f"Array or map cannot be a key", context
+				))
 			map[key.token.value] = res.register(self.visit(v, context))
 			if res.should_return(): return res
 		return res.success(value.Map(map).set_context(context).set_position(node.pos_start, node.pos_end))

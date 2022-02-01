@@ -1,4 +1,5 @@
 import os
+import sys
 import platform
 from src.lexer import Lexer
 from src.parser import Parser
@@ -30,6 +31,9 @@ class BuiltinFunction(BaseFunction):
 	
 	def __repr__(self):
 		return f"<built-in func {self.name}>"
+	
+	def return_type(self):
+		return String("built-in function")
 	
 	######################################
 	######### BUILT-IN FUNCTIONS #########
@@ -152,8 +156,7 @@ class BuiltinFunction(BaseFunction):
 			exit the program
 			example: exit_program()
 		"""
-		print("Bye bye!")
-		exit()
+		sys.exit()
 	execute_exit_program.arg_names = []
 
 	def execute_size(self, context):
@@ -173,26 +176,10 @@ class BuiltinFunction(BaseFunction):
 	def execute_typeof(self, context):
 		"""
 			return the type of the given value
-			example: typeof("string")
+			example: def return_type("string")
 		"""
 		value = context.symbol_table.get("value")
-		if isinstance(value, Number):
-			if isinstance(value.value, int):
-				return RuntimeResult().success(String("integer"))
-			elif isinstance(value.value, float):
-				return RuntimeResult().success(String("float"))
-		elif isinstance(value, String):
-			return RuntimeResult().success(String("string"))
-		elif isinstance(value, Array):
-			return RuntimeResult().success(String("array"))
-		elif isinstance(value, Map):
-			return RuntimeResult().success(String("map"))
-		elif isinstance(value, Function):
-			return RuntimeResult().success(String("function"))
-		else:
-			return RuntimeResult().failure(RuntimeError(
-				self.pos_start, self.pos_end, f"{value} has no type", context
-			))
+		return RuntimeResult().success(value.return_type())
 	execute_typeof.arg_names = ["value"]
 	
 	def execute_int(self, context):
@@ -315,6 +302,12 @@ class BuiltinFunction(BaseFunction):
 		for k, v in new_symbol_table.symbols.items():
 			self.context.symbol_table.set(k, v)
 		return RuntimeResult().success(Number.null)
+		
+		# create keys and values
+
+		# Another way
+		# new_map = Map(new_symbol_table.symbols)
+		# return RuntimeResult().success(new_map)
 	execute_import.arg_names = ["filename"]
 
 	def execute_clear(self, context):
@@ -329,6 +322,65 @@ class BuiltinFunction(BaseFunction):
 		return RuntimeResult().success(Number.null)
 	execute_clear.arg_names = []
 
+	def execute_keys(self, context):
+		"""
+			return an array of keys in a map
+			example: arr = keys(map)
+		"""
+		map = context.symbol_table.get("map")
+		if not isinstance(map, Map):
+			return RuntimeResult().failure(RuntimeError(
+				self.pos_start, self.pos_end, "Argument should be a map", context
+			))
+		lst = []
+		for i in list(map.map.keys()):
+			if isinstance(i, int) or isinstance(i, float):
+				lst.append(Number(i))
+			else:
+				lst.append(String(i))
+		return RuntimeResult().success(Array(lst))
+	execute_keys.arg_names = ["map"]
+
+	def execute_values(self, context):
+		"""
+			return an array of values in a map
+			example: arr = values(map)
+		"""
+		map = context.symbol_table.get("map")
+		if not isinstance(map, Map):
+			return RuntimeResult().failure(RuntimeError(
+				self.pos_start, self.pos_end, "Argument should be a map", context
+			))
+		lst = []
+		for i in list(map.map.values()):
+			if isinstance(i, int) or isinstance(i, float):
+				lst.append(Number(i))
+			else:
+				lst.append(String(i))
+		return RuntimeResult().success(Array(lst))
+	execute_values.arg_names = ["map"]
+
+	def execute_read(self, context):
+		"""
+			return the specified file content in string
+			example: content = read("file.txt")
+		"""
+		filename = context.symbol_table.get("filename")
+		if not isinstance(filename, String):
+			return RuntimeResult().failure(RuntimeError(
+				self.pos_start, self.pos_end, "Argument should be the type of string", context
+			))
+		filename = filename.value
+		try:
+			fobj = open(filename, "r+")
+			text = fobj.read()
+			fobj.close()
+		except Exception:
+			return RuntimeResult().failure(RuntimeError(
+				self.pos_start, self.pos_end, f"Could not open file'{filename}'", context
+			))
+		return RuntimeResult().success(String(text))
+	execute_read.arg_names = ["filename"]		
 
 BuiltinFunction.println 			= BuiltinFunction("println")
 BuiltinFunction.print	 			= BuiltinFunction("print")
@@ -350,3 +402,6 @@ BuiltinFunction.chars				= BuiltinFunction("chars")
 BuiltinFunction.split				= BuiltinFunction("split")
 BuiltinFunction.import_				= BuiltinFunction("import")
 BuiltinFunction.clear				= BuiltinFunction("clear")
+BuiltinFunction.keys				= BuiltinFunction("keys")
+BuiltinFunction.values				= BuiltinFunction("values")
+BuiltinFunction.read				= BuiltinFunction("read")	

@@ -18,11 +18,16 @@ println(str * 3)
 ### Array
 ```
 arr = ["Hello", "World", 123, 3.1415, ["me", "gen"]]
-# to add a new value, just use '+'
+# '+' を使って値を配列に追加することができます。
 arr = arr + "bichanna"
 
+# iteration
+for i in arr then
+	println(i)
+end
+
 a = [1, 2, 3, 4]
-# use '@' to retrieve specific value from an array
+# 配列から特定の値を取り出すには、'@' を使用します。
 println(a@0) # the first element
 println(a@-1) # the last element
 ```
@@ -58,13 +63,13 @@ if age > 18 then
   println("over 18")
 elseif age == 15 then
   println("15")
-else # notice you don't need 'then' keyword for 'else'
+else # 'else' に 'then' キーワードは必要ないです。
   println("??")
 end
 ```
 
 ### Forループ
-Maybe a bit wordy.
+文法が少し口説いかもしれないけど。
 ```
 arr = []
 for i = 1 through 12 step 2 then
@@ -73,6 +78,11 @@ end
 println(arr)
 # output
 # [2, 8, 32, 128, 512, 2048]
+
+# iteration
+for i in arr then
+	println(i)
+end
 ```
 
 ### While文
@@ -91,12 +101,12 @@ println(arr)
 # 一行
 defunc greet(name) -> println("Hello " + name)
 
-# multi-line function
+# 複数行の関数
 defunc greet(name)
 	println("Hello " + name)
 end
 
-# you can return from some value from function
+# 'return' で関数から値を返すことができます。
 defunc return_greet(name)
 	return_value = "Hello " + name
 	return return_value
@@ -111,7 +121,7 @@ println(return_greet("bichanna"))
 ```
 import("some_file.gen")
 
-# then you can call functions in some_file.gen
+# 上のようにインポートすると、some_file.gen にある関数を呼び出すことができます。
 some_func_in_some_file()
 ```
 

@@ -7,10 +7,16 @@
 > *Note:* **WARNING!! THIS LANGUAGE IS IN DEVELOPMENT. ANYTHING CAN CHANGE AT ANY MOMENT.**
 
 ## About
-Gen is a brand new, easy-to-learn, dynamic, interpreted, procedural, scripting language by [bichanna](https://github.com/bichanna) and others.<br>
-Gen's syntax is greatly inspired by Ruby and Python. But One unique thing in Gen is the use of `@`. It also has a simple REPL (but you need to write for loops, if statements, and functions in one line, which is possible but hard to write).<br>
+Gen is a brand new, easy-to-learn, dynamic, interpreted, procedural, programming language by [bichanna](https://github.com/bichanna) and others.<br>
+Gen's syntax is greatly inspired by Ruby and Python. But one unique thing in Gen is the use of `@`. It also has a simple REPL (but you need to write for loops, if statements, and functions in one line, which is possible but hard to write).<br>
 The language is created from scratch using Python (working on an implementation in C).
 
+
+## Hello World
+It's just one line without any entry function.
+```
+println("Hello World")
+```
 
 ## Example
 ```

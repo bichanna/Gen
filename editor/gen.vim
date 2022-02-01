@@ -12,7 +12,7 @@ if exists("b:current_syntax")
 endif
 
 " Language keywords
-syntax keyword genKeywords or and not if elseif else then for through step while defunc end return continue break
+syntax keyword genKeywords or and not if elseif else then for through step while defunc end return continue break in
 
 " Type keywords
 syntax keyword genType int float string null

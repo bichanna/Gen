@@ -26,6 +26,11 @@ arr = ["Hello", "World", 123, 3.1415, ["me", "gen"]]
 # to add a new value, just use '+'
 arr = arr + "bichanna"
 
+# iteration
+for i in arr then
+	println(i)
+end
+
 a = [1, 2, 3, 4]
 # use '@' to retrieve specific value from an array
 println(a@0) # the first element
@@ -79,6 +84,11 @@ end
 println(arr)
 # output
 # [2, 8, 32, 128, 512, 2048]
+
+# iteration
+for i in arr then
+	println(i)
+end
 ```
 
 ### While loop

@@ -82,6 +82,9 @@ class Value:
 		
 	def __repr__(self):
 		return f"{self.value}"
+	
+	def return_type(self):
+		return String("value")
 
 
 class Number(Value):
@@ -183,6 +186,12 @@ class Number(Value):
 	def is_true(self):
 		return self.value != 0
 	
+	def return_type(self):
+		if isinstance(self.value, int):
+			return String("integer")
+		else:
+			return String("float")
+	
 	def copy(self):
 		copy = Number(self.value)
 		copy.set_position(self.pos_start, self.pos_end)
@@ -267,6 +276,9 @@ class String(Value):
 	
 	def __str__(self):
 		return str(self.value)
+	
+	def return_type(self):
+		return String("string")
 
 
 class Array(Value):
@@ -315,6 +327,9 @@ class Array(Value):
 	def __repr__(self):
 		string = "[" + ', '.join([str(i) for i in self.elements]) + "]"
 		return string
+	
+	def return_type(self):
+		return String("array")
 
 
 class Map(Value):
@@ -348,6 +363,9 @@ class Map(Value):
 		else:
 			string += "}"
 		return string
+	
+	def return_type(self):
+		return String("map")
 
 
 class BaseFunction(Value):
@@ -415,4 +433,7 @@ class Function(BaseFunction):
 	
 	def __repr__(self):
 		return f"<func {self.name}>"
+	
+	def return_type(self):
+		return String("function")
 	
